@@ -4,21 +4,28 @@ import config.Config;
 import io.restassured.response.Response;
 import model.postModel.PostRequestDto;
 import model.postModel.PostDto;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import service.post.DeleteService;
 import service.post.GetService;
 import service.post.PostService;
 import service.post.UpdateService;
-import java.util.List;
+import testListener.TestListener;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+@Listeners(TestListener.class)
 public class PostTests extends Config {
     //dodati paginaciju
 
     SoftAssert softAssert;
-    @BeforeMethod
 
+
+    @BeforeMethod
     public void setUp() {
         softAssert = new SoftAssert();
     }
@@ -64,7 +71,7 @@ public class PostTests extends Config {
             }
         }
         softAssert.assertTrue(isInTheList);
-        softAssert.assertEquals(postRequestDto.getOwnerId(),ownerId);
+        softAssert.assertEquals(postRequestDto.getOwnerId(),ownerId);//ovo zakomentarisati; trebalo je samo radi provere
         softAssert.assertAll();
     }
     @Test
@@ -74,11 +81,15 @@ public class PostTests extends Config {
 
         PostDto postDto = new PostService().create(postRequestDto);
 
-        String postId = postDto.getId();
+        String[]dtoTags = postDto.getTags();
 
-        Response response = new GetService().getPostByTag(postId);
+        Response response = new GetService().getPostsByTag(dtoTags[2]);
+
+        String actual=(postRequestDto.getTags())[2];
 
         softAssert.assertEquals(response.getStatusCode(), 200);
+        softAssert.assertEquals(actual,dtoTags[2]);
+        softAssert.assertAll();
     }
     @Test
     public void getPostById() {

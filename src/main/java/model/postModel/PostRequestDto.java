@@ -35,7 +35,7 @@ public class PostRequestDto {
         return PostRequestDto.builder()
                 .image(faker.internet().avatar())
                 .likes("7")
-                .tags(new String[]{"Knjige", "Divlje macke","Gepard"})
+                .tags(new String[]{faker.lorem().word(), faker.lorem().word(),faker.lorem().word()})
                 .text(faker.lorem().sentence(4))
                 .ownerId(new PostOwner().createOwner(ownerRequest).getId())
                 .build();
