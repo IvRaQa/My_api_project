@@ -16,11 +16,14 @@ public class GetService {
     protected static final String GET_POSTS_BY_USER_ID = "/user/{id}/post";
     protected static final String GET_POSTS_BY_TAG = "/tag/{tag}/post";
     protected static final String GET_POST_BY_ID = "/post/{id}";
-    protected static  Map<String,String> map = new HashMap<>();
-         {
-          map.put("page", "1");
-          map.put("limit", "10");
-        }
+    protected static final Map<String,String> map = new HashMap<>();
+
+    public static void setPage(String page) {
+        map.put("page", page);
+    }
+    public static void setLimit(String limit) {
+        map.put("limit", limit);
+    }
 
     public List<PostDto> get() {
         return given()

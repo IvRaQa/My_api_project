@@ -36,7 +36,11 @@ public class PostTests extends Config {
 
         PostDto postDto = new PostService().create(postRequestDto);
 
-        List<PostDto> response = new GetService().get();
+        GetService getService =new GetService();
+        getService.setPage("1");
+        getService.setLimit("5");
+
+        List<PostDto> response = getService.get();
         boolean isInTheList = false;
 
         for (int i = 0; i < response.size(); i++) {
@@ -55,23 +59,28 @@ public class PostTests extends Config {
         PostRequestDto postRequestDto = PostRequestDto.createPost();
 
         PostDto postDto = new PostService().create(postRequestDto);
+        new PostService().create(postRequestDto);
 
         String ownerId = postDto.getOwner().getId();
 
-        List<PostDto> response = new GetService().get(ownerId);
+        GetService getService =new GetService();
+        getService.setPage("0");
+        getService.setLimit("5");
+
+        List<PostDto> response = getService.get(ownerId);
 
         boolean isInTheList = false;
 
         for (int i = 0; i < response.size(); i++) {
 
-            if (response.get(i).getId().equals(postDto.getId())) {
+            if (response.get(i).getId().equals(ownerId)) {
                 isInTheList = true;
                 System.out.println("Created post is in the owner's list");
                 break;
             }
         }
         softAssert.assertTrue(isInTheList);
-        softAssert.assertEquals(postRequestDto.getOwnerId(),ownerId);//ovo zakomentarisati; trebalo je samo radi provere
+        softAssert.assertEquals(response.get(0).getOwner().getId(),ownerId);//ovo zakomentarisati; trebalo je samo radi provere
         softAssert.assertAll();
     }
     @Test
@@ -80,10 +89,15 @@ public class PostTests extends Config {
         PostRequestDto postRequestDto = PostRequestDto.createPost();
 
         PostDto postDto = new PostService().create(postRequestDto);
+        new PostService().create(postRequestDto);
 
         String[]dtoTags = postDto.getTags();
 
-        Response response = new GetService().getPostsByTag(dtoTags[2]);
+        GetService getService =new GetService();
+        getService.setPage("0");
+        getService.setLimit("5");
+
+        Response response = getService.getPostsByTag(dtoTags[2]);
 
         String actual=(postRequestDto.getTags())[2];
 
@@ -100,7 +114,11 @@ public class PostTests extends Config {
 
         String postId = postDto.getId();
 
-        Response response = new GetService().getPostById(postId);
+        GetService getService =new GetService();
+        getService.setPage("1");
+        getService.setLimit("10");
+
+        Response response = getService.getPostById(postId);
 
         String actualId = response.jsonPath().get("id");
 
